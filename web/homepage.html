@@ -1,0 +1,345 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Inventory System</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0; 
+            padding: 0;
+            display: flex;
+            flex-direction: row; 
+            height: 100vh;
+            background-color: #f2f2f2;
+            color: black;
+        }
+
+        #hamburger-icon {
+            width: 36px;
+            height: 36px;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: width 0.3s ease;
+        }
+        
+        .sidebar.collapsed #hamburger-icon {
+            width: 36px; 
+            height: 36px; 
+        }
+        
+        .sidebar.collapsed {
+            width: 60px;
+        }
+
+        .sidebar img {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+        }
+
+        .sidebar.collapsed img {
+            margin: 0 auto;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s, padding-left 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #555;
+        }
+
+        .sidebar.collapsed a {
+            justify-content: center;
+            padding: 10px 0;
+        }
+
+        .sidebar.collapsed a span {
+            display: none;
+        }
+        
+        .hamburger-container {
+            display: flex;
+            align-items: center; 
+            gap: 10px; 
+            width: 100%;
+        }
+
+        .hamburger-container span {
+            display: inline-block;
+            font-size: 25px;
+            color: white;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .hamburger-container span {
+            display: none;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #e6e6e6;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            width: 100%;
+            padding: 0px;
+            text-align: center;
+            border-bottom: 2px solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        header img {
+            margin: 10px;
+            width: 60px;
+            height: auto;
+        }
+
+        header h1 {
+            font-size: 2rem;
+        }
+        
+        .admin-info {
+            display: flex;
+            align-items: center; /* Vertically center the content */
+            gap: 20px; /* Space between the image and text */
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            text-align: left; /* Align text to the left */
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 80%;
+        }
+
+        .admin-info img {
+            width: 120px; /* Set the photo size */
+            height: 120px;
+            border-radius: 50%; /* Make the photo circular */
+        }
+
+        .admin-info-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-info h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .admin-info p {
+            margin: 5px 0;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .admin-info a {
+            color: red;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+
+        .admin-info a:hover {
+            text-decoration: underline;
+        }
+
+        .links-container {
+            margin: 30px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .link-item {
+            background-color: white;
+            color: black;
+            text-align: center;
+            padding: 15px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        .link-item:hover {
+            background-color: #ddd;
+            transform: translateY(-3px);
+        }
+
+        .login-timestamp {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            text-align: center;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+        }
+
+        footer {
+            margin-top: auto;
+            background-color: #333;
+            color: #ccc;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="hamburger-container">
+            <img src="Images/hamburger.png" alt="Menu" id="hamburger-icon">
+        </div>
+        <a href="homepage.html">
+            <img src="Images/homepage.png" alt="Homepage Icon">
+            <span>Homepage</span>
+        </a>
+        <a href="dashboard.html">
+            <img src="Images/dashboard.png" alt="Dashboard Icon">
+            <span>Dashboard</span>
+        </a>
+        <a href="inventory.html">
+            <img src="Images/inventory.png" alt="Inventory Icon">
+            <span>Inventory</span>
+        </a>
+        <a href="staff.html">
+            <img src="Images/staff.png" alt="Staff Icon">
+            <span>Staff</span>
+        </a>
+        <a href="supplier.html">
+            <img src="Images/supplier.png" alt="Supplier Icon">
+            <span>Supplier</span>
+        </a>
+        <a href="invoices.html">
+            <img src="Images/invoices.png" alt="Invoices Icon">
+            <span>Invoices</span>
+        </a>
+        <a href="report.html">
+            <img src="Images/report.png" alt="Reports Icon">
+            <span>Reports</span>
+        </a>
+        <a href="settings.html">
+            <img src="Images/setting.png" alt="Settings Icon">
+            <span>Settings</span>
+        </a>
+        <a href="javascript:void(0);" onclick="logoutConfirmation()">
+            <img src="Images/logout.png" alt="Logout Icon">
+            <span>Logout</span>
+        </a>
+    </div>
+    <div class="main-content">
+        <header>
+            <img src="Images/logo.png">
+            <h1>Welcome to the Camera Inventory System</h1>
+        </header>
+        
+        <div class="admin-info">
+            <img src="Images/harraz.jpg" alt="Admin Photo">
+            <div class="admin-info-details">
+                <h2>MUHAMMAD HARRAZ HARIRI BIN HAZRILHASNIE</h2>
+                <p>(Admin)</p>
+                <a href="javascript:void(0);" onclick="logoutConfirmation()">Logout</a>
+            </div>
+        </div>
+
+        <div class="links-container">
+            <a class="link-item" href="dashboard.html">Dashboard</a>
+            <a class="link-item" href="inventory.html">Inventory</a>
+            <a class="link-item" href="#">Staff</a>
+            <a class="link-item" href="supplier.html">Supplier</a>
+            <a class="link-item" href="invoices.html">Invoices</a>
+            <a class="link-item" href="#">Reports</a>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Staff Name</th>
+                    <th>Role</th>
+                    <th>Last Login</th>
+                    <th>Last Logout</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>NABILAH BINTI AHMAD FAUZI</td>
+                    <td>Admin</td>
+                    <td>2024-11-17 08:45 AM</td>
+                    <td>2024-11-17 05:00 PM</td>
+                </tr>
+                <tr>
+                    <td>NURUL HUSNA RAMADHAN BINTI ABDUL RAHMAN</td>
+                    <td>Staff</td>
+                    <td>2024-11-17 09:15 AM</td>
+                    <td>2024-11-17 04:45 PM</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <footer>
+            &copy; 2024 Camera Rental System. All Rights Reserved.
+        </footer>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const hamburgerIcon = document.getElementById('hamburger-icon');
+
+        hamburgerIcon.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+    </script>
+</body>
+</html>

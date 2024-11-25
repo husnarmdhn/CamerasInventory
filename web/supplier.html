@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Inventory System</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0; 
+            padding: 0;
+            display: flex;
+            flex-direction: row; 
+            height: 100vh;
+            background-color: #f2f2f2;
+            color: black;
+        }
+
+        #hamburger-icon {
+            width: 36px;
+            height: 36px;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: width 0.3s ease;
+        }
+        
+        .sidebar.collapsed #hamburger-icon {
+            width: 36px; 
+            height: 36px; 
+        }
+        
+        .sidebar.collapsed {
+            width: 60px;
+        }
+
+        .sidebar img {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+        }
+
+        .sidebar.collapsed img {
+            margin: 0 auto;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s, padding-left 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #555;
+        }
+
+        .sidebar.collapsed a {
+            justify-content: center;
+            padding: 10px 0;
+        }
+
+        .sidebar.collapsed a span {
+            display: none;
+        }
+        
+        .hamburger-container {
+            display: flex;
+            align-items: center; 
+            gap: 10px; 
+            width: 100%;
+        }
+
+        .hamburger-container span {
+            display: inline-block;
+            font-size: 25px;
+            color: white;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .hamburger-container span {
+            display: none;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #e6e6e6;
+            overflow-y: auto;
+            max-height: calc(100vh - 40px);
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            width: 100%;
+            padding: 0px;
+            text-align: center;
+            border-bottom: 2px solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px; /* Adds space between the image and the text */
+        }
+        
+        header img {
+            margin: 10px;
+            width: 60px; /* Smaller size for the image */
+            height: auto;
+        }
+
+        header h1 {
+            font-size: 2rem;
+        }
+
+        .links-container {
+            margin: 30px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .link-item {
+            background-color: white;
+            color: black;
+            text-align: center;
+            padding: 15px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        .link-item:hover {
+            background-color: #ddd;
+            transform: translateY(-3px);
+        }
+
+        footer {
+            margin-top: auto;
+            background-color: #333;
+            color: #ccc;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .action-icons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-icons img {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .action-icons img:hover {
+            transform: scale(1.2);
+        }
+        
+        #editForm {
+            display: none;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 50%;
+            margin: 20px auto;
+        }
+
+        #editForm label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        #editForm input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #editForm button {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #editForm button:hover {
+            background-color: #555;
+        }
+        
+        .top-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        #searchBox {
+            margin-right: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        #addSupplierButton {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #addSupplierButton:hover {
+            background-color: #555;
+        }
+
+        #addSupplierForm {
+            display: none;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 50%;
+            margin: 20px auto;
+        }
+
+        #addSupplierForm label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        #addSupplierForm input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #addSupplierForm button {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #addSupplierForm button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="hamburger-container">
+            <img src="Images/hamburger.png" alt="Menu" id="hamburger-icon">
+        </div>
+        <a href="homepage.html">
+            <img src="Images/homepage.png" alt="Homepage Icon">
+            <span>Homepage</span>
+        </a>
+        <a href="dashboard.html">
+            <img src="Images/dashboard.png" alt="Dashboard Icon">
+            <span>Dashboard</span>
+        </a>
+        <a href="inventory.html">
+            <img src="Images/inventory.png" alt="Inventory Icon">
+            <span>Inventory</span>
+        </a>
+        <a href="staff.html">
+            <img src="Images/staff.png" alt="Staff Icon">
+            <span>Staff</span>
+        </a>
+        <a href="supplier.html">
+            <img src="Images/supplier.png" alt="Supplier Icon">
+            <span>Supplier</span>
+        </a>
+        <a href="invoices.html">
+            <img src="Images/invoices.png" alt="Invoices Icon">
+            <span>Invoices</span>
+        </a>
+        <a href="report.html">
+            <img src="Images/report.png" alt="Reports Icon">
+            <span>Reports</span>
+        </a>
+        <a href="settings.html">
+            <img src="Images/setting.png" alt="Settings Icon">
+            <span>Settings</span>
+        </a>
+        <a href="javascript:void(0);" onclick="logoutConfirmation()">
+            <img src="Images/logout.png" alt="Logout Icon">
+            <span>Logout</span>
+        </a>
+    </div>
+    <div class="main-content">
+        <header>
+            <h1>Inventory Details</h1>
+        </header>
+        
+        <div class="top-actions">
+            <input type="text" id="searchBox" placeholder="Search inventory..." oninput="searchSupplier()">
+            <button id="addSupplierButton" onclick="showAddSupplierForm()">Add Supplier</button>
+        </div>
+        
+        <table id="supplierTable">
+            
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Supplier ID</th>
+                    <th onclick="sortTable(1)">Supplier Name</th>
+                    <th onclick="sortTable(2)">Phone Number</th>
+                    <th onclick="sortTable(3)">Email</th>
+                    <th onclick="sortTable(4)">Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        
+        <form id="editForm">
+            <label for="editSupplierID">Supplier ID</label>
+            <input type="text" id="editSupplierID" required>
+            <label for="editSupplierName">Supplier Name</label>
+            <input type="text" id="editSupplierName" required>
+            <label for="editPhoneNumber">Phone Number</label>
+            <input type="text" id="editPhoneNumber" required>
+            <label for="editEmail">Email</label>
+            <input type="email" id="editEmail" required>
+            <label for="editStatus">Status</label>
+            <input type="text" id="editStatus" required>
+            <button type="submit">Save Changes</button>
+            <button type="button" onclick="cancelEdit()">Cancel</button>
+        </form>
+        
+        <form id="addSupplierForm">
+            <label for="newSupplierID">Supplier ID</label>
+            <input type="text" id="newSupplierID" required>
+            <label for="newSupplierName">Supplier Name</label>
+            <input type="text" id="newSupplierName" required>
+            <label for="newPhoneNumber">Phone Number</label>
+            <input type="text" id="newPhoneNumber" required>
+            <label for="newEmail">Email</label>
+            <input type="email" id="newEmail" required>
+            <label for="newStatus">Status</label>
+            <input type="text" id="newStatus" required>
+            <button type="submit">Add Supplier</button>
+            <button type="button" onclick="hideAddSupplierForm()">Cancel</button>
+        </form>
+        
+        <footer>
+            &copy; 2024 Camera Rental System. All Rights Reserved.
+        </footer>
+    </div>
+    
+    <script>
+        const supplierData = [
+            { supplierID: 'SUP001', supplierName: 'FotoZam Supplier', phoneNumber: '03-82345671', email: 'info@fotozam.com.my', status: 'Active' },
+            { supplierID: 'SUP002', supplierName: 'KL Camera Supplies', phoneNumber: '03-23456780', email: 'sales@klcamerasupplies.my', status: 'Active' },
+            { supplierID: 'SUP003', supplierName: 'Lens Depot Malaysia', phoneNumber: '03-34567890', email: 'support@lensdepot.my', status: 'Active' },
+            { supplierID: 'SUP004', supplierName: 'MyCamera Equipment', phoneNumber: '03-11223344', email: 'contact@mycamerahq.my', status: 'Active' }
+        ];
+
+        const tableBody = document.querySelector('#supplierTable tbody');
+        const searchBox = document.getElementById('searchBox');
+        const editForm = document.getElementById('editForm');
+        const addSupplierForm = document.getElementById('addSupplierForm');
+        const supplierTable = document.getElementById('supplierTable');
+        let currentEditingSupplier = null;
+        let sortOrder = true;
+
+        // Load supplier data into the table
+        function loadTable() {
+            tableBody.innerHTML = '';
+            supplierData.forEach((supplier, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${supplier.supplierID}</td>
+                    <td>${supplier.supplierName}</td>
+                    <td>${supplier.phoneNumber}</td>
+                    <td>${supplier.email}</td>
+                    <td>${supplier.status}</td>
+                    <td class="action-icons">
+                        <img src="Images/edit.png" alt="Edit" onclick="editSupplier(${index})">
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to show the edit form
+        function editSupplier(index) {
+            currentEditingSupplier = supplierData[index];
+            document.getElementById('editSupplierID').value = currentEditingSupplier.supplierID;
+            document.getElementById('editSupplierName').value = currentEditingSupplier.supplierName;
+            document.getElementById('editPhoneNumber').value = currentEditingSupplier.phoneNumber;
+            document.getElementById('editEmail').value = currentEditingSupplier.email;
+            document.getElementById('editStatus').value = currentEditingSupplier.status;
+
+            // Hide the table and show the edit form
+            supplierTable.style.display = 'none';
+            editForm.style.display = 'block';
+        }
+
+        // Function to show the add supplier form
+        function showAddSupplierForm() {
+            // Hide the table and show the add supplier form
+            supplierTable.style.display = 'none';
+            addSupplierForm.style.display = 'block';
+        }
+
+        // Function to cancel the edit and return to the table
+        function cancelEdit() {
+            // Show the table and hide the edit form
+            supplierTable.style.display = 'block';
+            editForm.style.display = 'none';
+        }
+
+        // Function to hide the add supplier form and return to the table
+        function hideAddSupplierForm() {
+            // Show the table and hide the add supplier form
+            supplierTable.style.display = 'block';
+            addSupplierForm.style.display = 'none';
+        }
+
+        // Submit the edit form
+        editForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            currentEditingSupplier.supplierID = document.getElementById('editSupplierID').value;
+            currentEditingSupplier.supplierName = document.getElementById('editSupplierName').value;
+            currentEditingSupplier.phoneNumber = document.getElementById('editPhoneNumber').value;
+            currentEditingSupplier.email = document.getElementById('editEmail').value;
+            currentEditingSupplier.status = document.getElementById('editStatus').value;
+
+            // Hide the form and show the table
+            editForm.style.display = 'none';
+            supplierTable.style.display = 'block';
+
+            loadTable();
+        });
+
+        // Add a new supplier
+        addSupplierForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newSupplier = {
+                supplierID: document.getElementById('newSupplierID').value,
+                supplierName: document.getElementById('newSupplierName').value,
+                phoneNumber: document.getElementById('newPhoneNumber').value,
+                email: document.getElementById('newEmail').value,
+                status: document.getElementById('newStatus').value
+            };
+
+            supplierData.push(newSupplier);
+
+            // Hide the add supplier form and show the table
+            addSupplierForm.style.display = 'none';
+            supplierTable.style.display = 'block';
+
+            loadTable();
+        });
+
+        // Search functionality
+        function searchSupplier() {
+            const query = searchBox.value.toLowerCase();
+            const filteredData = supplierData.filter(supplier => {
+                return Object.values(supplier).some(val => val.toString().toLowerCase().includes(query));
+            });
+            loadFilteredTable(filteredData);
+        }
+
+        function loadFilteredTable(data) {
+            tableBody.innerHTML = '';
+            data.forEach((supplier, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${supplier.supplierID}</td>
+                    <td>${supplier.supplierName}</td>
+                    <td>${supplier.phoneNumber}</td>
+                    <td>${supplier.email}</td>
+                    <td>${supplier.status}</td>
+                    <td class="action-icons">
+                        <img src="Images/edit.png" alt="Edit" onclick="editSupplier(${index})">
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Initial load
+        loadTable();
+    </script>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const hamburgerIcon = document.getElementById('hamburger-icon');
+
+        hamburgerIcon.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+    </script>
+</body>
+</html>

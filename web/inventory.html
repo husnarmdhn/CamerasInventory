@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Inventory System</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0; 
+            padding: 0;
+            display: flex;
+            flex-direction: row; 
+            height: 100vh;
+            background-color: #f2f2f2;
+            color: black;
+        }
+
+        #hamburger-icon {
+            width: 36px;
+            height: 36px;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: width 0.3s ease;
+        }
+        
+        .sidebar.collapsed #hamburger-icon {
+            width: 36px; 
+            height: 36px; 
+        }
+        
+        .sidebar.collapsed {
+            width: 60px;
+        }
+
+        .sidebar img {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+        }
+
+        .sidebar.collapsed img {
+            margin: 0 auto;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s, padding-left 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #555;
+        }
+
+        .sidebar.collapsed a {
+            justify-content: center;
+            padding: 10px 0;
+        }
+
+        .sidebar.collapsed a span {
+            display: none;
+        }
+        
+        .hamburger-container {
+            display: flex;
+            align-items: center; 
+            gap: 10px; 
+            width: 100%;
+        }
+
+        .hamburger-container span {
+            display: inline-block;
+            font-size: 25px;
+            color: white;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .hamburger-container span {
+            display: none;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #e6e6e6;
+            overflow-y: auto;
+            max-height: calc(100vh - 40px);
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            width: 100%;
+            padding: 0px;
+            text-align: center;
+            border-bottom: 2px solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px; /* Adds space between the image and the text */
+        }
+        
+        header img {
+            margin: 10px;
+            width: 60px; /* Smaller size for the image */
+            height: auto;
+        }
+
+        header h1 {
+            font-size: 2rem;
+        }
+
+        .links-container {
+            margin: 30px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .link-item {
+            background-color: white;
+            color: black;
+            text-align: center;
+            padding: 15px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        .link-item:hover {
+            background-color: #ddd;
+            transform: translateY(-3px);
+        }
+
+        footer {
+            margin-top: auto;
+            background-color: #333;
+            color: #ccc;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .action-icons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-icons img {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .action-icons img:hover {
+            transform: scale(1.2);
+        }
+        
+        #editForm {
+            display: none;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 50%;
+            margin: 20px auto;
+        }
+
+        #editForm label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        #editForm input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #editForm button {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #editForm button:hover {
+            background-color: #555;
+        }
+        
+        .top-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        #searchBox {
+            margin-right: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        #addItemButton {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #addItemButton:hover {
+            background-color: #555;
+        }
+
+        #addItemForm {
+            display: none;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 50%;
+            margin: 20px auto;
+        }
+
+        #addItemForm label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        #addItemForm input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #addItemForm button {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #addItemForm button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="hamburger-container">
+            <img src="Images/hamburger.png" alt="Menu" id="hamburger-icon">
+        </div>
+        <a href="homepage.html">
+            <img src="Images/homepage.png" alt="Homepage Icon">
+            <span>Homepage</span>
+        </a>
+        <a href="dashboard.html">
+            <img src="Images/dashboard.png" alt="Dashboard Icon">
+            <span>Dashboard</span>
+        </a>
+        <a href="inventory.html">
+            <img src="Images/inventory.png" alt="Inventory Icon">
+            <span>Inventory</span>
+        </a>
+        <a href="#">
+            <img src="Images/staff.png" alt="Staff Icon">
+            <span>Staff</span>
+        </a>
+        <a href="supplier.html">
+            <img src="Images/supplier.png" alt="Supplier Icon">
+            <span>Supplier</span>
+        </a>
+        <a href="invoices.html">
+            <img src="Images/invoices.png" alt="Invoices Icon">
+            <span>Invoices</span>
+        </a>
+        <a href="#">
+            <img src="Images/report.png" alt="Reports Icon">
+            <span>Reports</span>
+        </a>
+        <a href="#">
+            <img src="Images/setting.png" alt="Settings Icon">
+            <span>Settings</span>
+        </a>
+        <a href="#">
+            <img src="Images/logout.png" alt="Logout Icon">
+            <span>Logout</span>
+        </a>
+    </div>
+    <div class="main-content">
+        <header>
+            <h1>Inventory Details</h1>
+        </header>
+        
+        <div class="top-actions">
+            <input type="text" id="searchBox" placeholder="Search inventory..." oninput="searchInventory()">
+            <button id="addItemButton" onclick="showAddItemForm()">Add Item</button>
+        </div>
+        
+        <table id="inventoryTable">
+            
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Item ID</th>
+                    <th onclick="sortTable(1)">Supplier ID</th>
+                    <th onclick="sortTable(2)">Shelf</th>
+                    <th onclick="sortTable(3)">Type</th>
+                    <th onclick="sortTable(4)">Brand</th>
+                    <th onclick="sortTable(5)">Model</th>
+                    <th onclick="sortTable(6)">Price</th>
+                    <th onclick="sortTable(7)">Quantity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        
+        <form id="editForm">
+            <label for="editType">Item ID</label>
+            <input type="text" id="editItem" required>
+            <label for="editType">Supplier ID</label>
+            <input type="text" id="editSupplier" required>
+            <label for="editType">Shelf</label>
+            <input type="text" id="editShelf" required>
+            <label for="editType">Type:</label>
+            <input type="text" id="editType" required>
+            <label for="editBrand">Brand:</label>
+            <input type="text" id="editBrand" required>
+            <label for="editModel">Model:</label>
+            <input type="text" id="editModel" required>
+            <label for="editPrice">Price:</label>
+            <input type="number" id="editPrice" required>
+            <label for="editQuantity">Quantity:</label>
+            <input type="number" id="editQuantity" required>
+            <button type="submit">Save Changes</button>
+            <button type="button" onclick="cancelEdit()">Cancel</button>
+        </form>
+        
+          <form id="addItemForm">
+            <label for="newItemID">Item ID</label>
+            <input type="text" id="newItemID" required>
+            <label for="newSupplierID">Supplier ID</label>
+            <input type="text" id="newSupplierID" required>
+            <label for="newShelf">Shelf</label>
+            <input type="text" id="newShelf" required>
+            <label for="newType">Type</label>
+            <input type="text" id="newType" required>
+            <label for="newBrand">Brand</label>
+            <input type="text" id="newBrand" required>
+            <label for="newModel">Model</label>
+            <input type="text" id="newModel" required>
+            <label for="newPrice">Price</label>
+            <input type="number" id="newPrice" required>
+            <label for="newQuantity">Quantity</label>
+            <input type="number" id="newQuantity" required>
+            <button type="submit">Add Item</button>
+            <button type="button" onclick="hideAddItemForm()">Cancel</button>
+        </form>
+        
+        <footer>
+            &copy; 2024 Camera Rental System. All Rights Reserved.
+        </footer>
+    </div>
+    
+    <script>
+        const inventoryData = [
+            { itemID: 'C001', supplierID: 'SUP001', shelf: '1-A', type: 'Camera', brand: 'Canon', model: 'EOS 5D Mark IV', price: 200, quantity: 5 },
+            { itemID: 'C002', supplierID: 'SUP003', shelf: '1-B', type: 'Camera', brand: 'Nikon', model: 'D850', price: 150, quantity: 3 },
+            { itemID: 'C003', supplierID: 'SUP001', shelf: '2-A', type: 'Camera', brand: 'Canon', model: 'Rebel T7', price: 70, quantity: 2 },
+            { itemID: 'C004', supplierID: 'SUP002', shelf: '2-B', type: 'Camera', brand: 'Sony', model: 'ZV-1', price: 60, quantity: 1 },
+            { itemID: 'C005', supplierID: 'SUP001', shelf: '3-A', type: 'Camera', brand: 'Canon', model: 'PowerShot G7 X Mark III', price: 50, quantity: 1 },
+            { itemID: 'C006', supplierID: 'SUP001', shelf: '3-B', type: 'Camera', brand: 'Canon', model: 'EOS 90D', price: 100, quantity: 1 },
+            { itemID: 'L001', supplierID: 'SUP004', shelf: '4-A', type: 'Lens', brand: 'Canon', model: 'RF 24-70mm f/2.8L IS USM', price: 90, quantity: 2 },
+            { itemID: 'L002', supplierID: 'SUP002', shelf: '4-B', type: 'Lens', brand: 'Sony', model: 'FE 50mm f/1.8', price: 30, quantity: 2 },
+            { itemID: 'L003', supplierID: 'SUP003', shelf: '5-A', type: 'Lens', brand: 'Nikon', model: 'AF-S 35mm f/1.8G', price: 25, quantity: 1 },
+            { itemID: 'L004', supplierID: 'SUP004', shelf: '5-B', type: 'Lens', brand: 'Canon', model: 'EF 50mm f/1.8 STM', price: 20, quantity: 1 }
+        ];
+        
+        const tableBody = document.querySelector('#inventoryTable tbody');
+        const searchBox = document.getElementById('searchBox');
+        const editForm = document.getElementById('editForm');
+        const addItemForm = document.getElementById('addItemForm');
+        let currentEditingItem = null;
+        let sortOrder = true;
+        
+        function loadTable() {
+            tableBody.innerHTML = '';
+            inventoryData.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.itemID}</td>
+                    <td>${item.supplierID}</td>
+                    <td>${item.shelf}</td>
+                    <td>${item.type}</td>
+                    <td>${item.brand}</td>
+                    <td>${item.model}</td>
+                    <td>${item.price}</td>
+                    <td>${item.quantity}</td>
+                    <td class="action-icons">
+                        <img src="Images/edit.png" alt="Edit" onclick="editItem(${index})">
+                        <img src="Images/delete.png" alt="Delete" onclick="deleteItem(${index})">
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function editItem(index) {
+            currentEditingItem = inventoryData[index];
+            document.getElementById('editItem').value = currentEditingItem.itemID;
+            document.getElementById('editSupplier').value = currentEditingItem.supplierID;
+            document.getElementById('editShelf').value = currentEditingItem.shelf;
+            document.getElementById('editType').value = currentEditingItem.type;
+            document.getElementById('editBrand').value = currentEditingItem.brand;
+            document.getElementById('editModel').value = currentEditingItem.model;
+            document.getElementById('editPrice').value = currentEditingItem.price;
+            document.getElementById('editQuantity').value = currentEditingItem.quantity;
+            editForm.style.display = 'block';
+        }
+        
+        function searchInventory() {
+            const query = searchBox.value.toLowerCase();
+            const filteredData = inventoryData.filter(item => {
+                return Object.values(item).some(val => val.toString().toLowerCase().includes(query));
+            });
+            loadFilteredTable(filteredData);
+        }
+        
+        function loadFilteredTable(data) {
+            tableBody.innerHTML = '';
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.itemID}</td>
+                    <td>${item.supplierID}</td>
+                    <td>${item.shelf}</td>
+                    <td>${item.type}</td>
+                    <td>${item.brand}</td>
+                    <td>${item.model}</td>
+                    <td>${item.price}</td>
+                    <td>${item.quantity}</td>
+                    <td class="action-icons">
+                        <img src="Images/edit.png" alt="Edit" onclick="editItem(${index})">
+                        <img src="Images/delete.png" alt="Delete" onclick="deleteItem(${index})">
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function sortTable(columnIndex) {
+            inventoryData.sort((a, b) => {
+                const aValue = Object.values(a)[columnIndex].toString().toLowerCase();
+                const bValue = Object.values(b)[columnIndex].toString().toLowerCase();
+
+                if (aValue < bValue) return sortOrder ? -1 : 1;
+                if (aValue > bValue) return sortOrder ? 1 : -1;
+                return 0;
+            });
+            sortOrder = !sortOrder;
+            loadTable();
+        }
+
+        function deleteItem(index) {
+            inventoryData.splice(index, 1);
+            loadTable();
+        }
+
+        editForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            currentEditingItem.itemID = document.getElementById('editItem').value;
+            currentEditingItem.supplierID = document.getElementById('editSupplier').value;
+            currentEditingItem.shelf = document.getElementById('editShelf').value;
+            currentEditingItem.type = document.getElementById('editType').value;
+            currentEditingItem.brand = document.getElementById('editBrand').value;
+            currentEditingItem.model = document.getElementById('editModel').value;
+            currentEditingItem.price = document.getElementById('editPrice').value;
+            currentEditingItem.quantity = document.getElementById('editQuantity').value;
+            editForm.style.display = 'none';
+            loadTable();
+        });
+        
+        function showAddItemForm() {
+            addItemForm.style.display = 'block';
+        }
+
+        function hideAddItemForm() {
+            addItemForm.style.display = 'none';
+        }
+        
+        function cancelEdit() {
+            editForm.style.display = 'none';
+        }
+
+        addItemForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newItem = {
+                itemID: document.getElementById('newItemID').value,
+                supplierID: document.getElementById('newSupplierID').value,
+                shelf: document.getElementById('newShelf').value,
+                type: document.getElementById('newType').value,
+                brand: document.getElementById('newBrand').value,
+                model: document.getElementById('newModel').value,
+                price: document.getElementById('newPrice').value,
+                quantity: document.getElementById('newQuantity').value
+            };
+            inventoryData.push(newItem);
+            loadTable();
+            hideAddItemForm();
+        });
+        
+        function deleteItem(index) {
+            const confirmDelete = confirm('Do you confirm to delete this item?');
+            if (confirmDelete) {
+                inventoryData.splice(index, 1);
+                loadTable();
+            }
+        }
+
+        loadTable();
+    </script>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const hamburgerIcon = document.getElementById('hamburger-icon');
+
+        hamburgerIcon.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+    </script>
+</body>
+</html>

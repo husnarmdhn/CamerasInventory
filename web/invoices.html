@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Inventory System</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0; 
+            padding: 0;
+            display: flex;
+            flex-direction: row; 
+            height: 100vh;
+            background-color: #f2f2f2;
+            color: black;
+        }
+
+        #hamburger-icon {
+            width: 36px;
+            height: 36px;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: width 0.3s ease;
+        }
+        
+        .sidebar.collapsed #hamburger-icon {
+            width: 36px; 
+            height: 36px; 
+        }
+        
+        .sidebar.collapsed {
+            width: 60px;
+        }
+
+        .sidebar img {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+        }
+
+        .sidebar.collapsed img {
+            margin: 0 auto;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s, padding-left 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #555;
+        }
+
+        .sidebar.collapsed a {
+            justify-content: center;
+            padding: 10px 0;
+        }
+
+        .sidebar.collapsed a span {
+            display: none;
+        }
+        
+        .hamburger-container {
+            display: flex;
+            align-items: center; 
+            gap: 10px; 
+            width: 100%;
+        }
+
+        .hamburger-container span {
+            display: inline-block;
+            font-size: 25px;
+            color: white;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .hamburger-container span {
+            display: none;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #e6e6e6;
+            overflow-y: auto;
+            max-height: calc(100vh - 40px); 
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            width: 100%;
+            padding: 0px;
+            text-align: center;
+            border-bottom: 2px solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px; /* Adds space between the image and the text */
+        }
+        
+        header img {
+            margin: 10px;
+            width: 60px; /* Smaller size for the image */
+            height: auto;
+        }
+
+        header h1 {
+            font-size: 2rem;
+        }
+
+        .links-container {
+            margin: 30px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .link-item {
+            background-color: white;
+            color: black;
+            text-align: center;
+            padding: 15px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        .link-item:hover {
+            background-color: #ddd;
+            transform: translateY(-3px);
+        }
+        
+        .container {
+            gap: 20px; 
+            width: 80%;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, 
+        .form-group select {
+            width: 90%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .button-group {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button.print {
+            background-color: #28a745;
+            color: white;
+        }
+
+        button.preview {
+            background-color: #007bff;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .invoice-preview {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .invoice-table th, .invoice-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .invoice-table th {
+            background-color: #333;
+            color: white;
+        }
+
+        footer {
+            margin-top: auto;
+            background-color: #333;
+            color: #ccc;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="hamburger-container">
+            <img src="Images/hamburger.png" alt="Menu" id="hamburger-icon">
+        </div>
+        <a href="homepage.html">
+            <img src="Images/homepage.png" alt="Homepage Icon">
+            <span>Homepage</span>
+        </a>
+        <a href="dashboard.html">
+            <img src="Images/dashboard.png" alt="Dashboard Icon">
+            <span>Dashboard</span>
+        </a>
+        <a href="inventory.html">
+            <img src="Images/inventory.png" alt="Inventory Icon">
+            <span>Inventory</span>
+        </a>
+        <a href="staff.html">
+            <img src="Images/staff.png" alt="Staff Icon">
+            <span>Staff</span>
+        </a>
+        <a href="supplier.html">
+            <img src="Images/supplier.png" alt="Supplier Icon">
+            <span>Supplier</span>
+        </a>
+        <a href="invoices.html">
+            <img src="Images/invoices.png" alt="Invoices Icon">
+            <span>Invoices</span>
+        </a>
+        <a href="report.html">
+            <img src="Images/report.png" alt="Reports Icon">
+            <span>Reports</span>
+        </a>
+        <a href="settings.html">
+            <img src="Images/setting.png" alt="Settings Icon">
+            <span>Settings</span>
+        </a>
+        <a href="javascript:void(0);" onclick="logoutConfirmation()">
+            <img src="Images/logout.png" alt="Logout Icon">
+            <span>Logout</span>
+        </a>
+    </div>
+    <div class="main-content">
+        <header>
+            <h1>Invoices</h1>
+        </header>
+        
+        <div class="container">
+            <h1>Invoice Generator</h1>
+            <form id="invoiceForm">
+                <div class="form-group">
+                    <label for="saleID">Sale ID</label>
+                    <input type="text" id="saleID" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="staffID">Staff</label>
+                    <select id="staffID" required>
+                        <option value="Muhammad Harraz">Muhammad Harraz</option>
+                        <option value="Nabilah">Nabilah</option>
+                        <option value="Husna">Husna</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="custID">Customer ID</label>
+                    <input type="text" id="custID" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="custName">Customer Name</label>
+                    <input type="text" id="custName" required>
+                </div>
+                <div class="form-group">
+                    <label for="custPhone">Customer Phone</label>
+                    <input type="tel" id="custPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="custEmail">Customer Email</label>
+                    <input type="email" id="custEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="Item">Product</label>
+                    <select id="Item" required>
+                        <option value="EOS 5D Mark IV">C004</option>
+                        <option value="PowerShot G7 X Mark III">C024</option>
+                        <option value="RF 24-70mm f/2.8L IS USM">C012</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="saleDate">Sale Date</label>
+                    <input type="text" id="saleDate" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="saleTime">Sale Time</label>
+                    <input type="text" id="saleTime" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="saleQuantity">Sale Quantity</label>
+                    <input type="number" id="saleQuantity" required>
+                </div>
+                <div class="form-group">
+                    <label for="salePrice">Sale Price (per item)</label>
+                    <input type="number" id="salePrice" required>
+                </div>
+                <div class="form-group">
+                    <label for="saleTotal">Total Sale (excl. tax)</label>
+                    <input type="number" id="saleTotal" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="taxAmount">Tax (6%)</label>
+                    <input type="number" id="taxAmount" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="totalWithTax">Total Sale (incl. tax)</label>
+                    <input type="number" id="totalWithTax" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="paymentMethod">Payment Method</label>
+                    <select id="paymentMethod" required>
+                        <option value="Cash">Cash</option>
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="Online Banking">Online Banking</option>
+                    </select>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="preview" onclick="generatePreview()">Preview</button>
+                </div>
+            </form>
+
+            <div class="invoice-preview" id="invoicePreview">
+                <h2>Invoice</h2>
+                <table class="invoice-table">
+                    <tbody id="previewContent"></tbody>
+                </table>
+                <div class="button-group">
+                    <button type="button" class="print" onclick="printInvoice()">Print</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            &copy; 2024 Camera Rental System. All Rights Reserved.
+        </footer>
+    </div>
+
+    <script>
+        let saleCounter = 1;
+        let customerCounter = 1;
+
+        function generateIDs() {
+            document.getElementById('saleID').value = `SA${saleCounter.toString().padStart(3, '0')}`;
+            document.getElementById('custID').value = `CUST${customerCounter.toString().padStart(3, '0')}`;
+            saleCounter++;
+            customerCounter++;
+        }
+
+        const now = new Date();
+        document.getElementById('saleDate').value = now.toISOString().split('T')[0];
+        document.getElementById('saleTime').value = now.toTimeString().split(' ')[0];
+
+        window.onload = generateIDs;
+
+        document.getElementById('saleQuantity').addEventListener('input', calculateTotal);
+        document.getElementById('salePrice').addEventListener('input', calculateTotal);
+
+        function calculateTotal() {
+            const quantity = parseInt(document.getElementById('saleQuantity').value) || 0;
+            const price = parseFloat(document.getElementById('salePrice').value) || 0;
+            const totalSale = (quantity * price).toFixed(2);
+            const taxAmount = (totalSale * 0.06).toFixed(2);
+            const totalWithTax = (parseFloat(totalSale) + parseFloat(taxAmount)).toFixed(2);
+
+            document.getElementById('saleTotal').value = totalSale;
+            document.getElementById('taxAmount').value = taxAmount;
+            document.getElementById('totalWithTax').value = totalWithTax;
+        }
+
+        function generatePreview() {
+            const form = document.getElementById('invoiceForm');
+            const previewContent = document.getElementById('previewContent');
+            previewContent.innerHTML = '';
+
+            Array.from(form.elements).forEach((element) => {
+                if (element.id && element.value) {
+                    previewContent.innerHTML += `
+                        <tr>
+                            <th>${element.labels ? element.labels[0].innerText : element.id}</th>
+                            <td>${element.value}</td>
+                        </tr>`;
+                }
+            });
+
+            document.getElementById('invoicePreview').style.display = 'block';
+        }
+
+        function printInvoice() {
+            const printContent = document.getElementById('invoicePreview').innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Print Invoice</title>
+                    <style>
+                        body { font-family: 'Poppins', sans-serif; margin: 20px; }
+                        table { width: 100%;}
+                        th, td { padding: 8px; border: 1px solid #ddd; }
+                        th { background-color: #333; color: white; }
+                    </style>
+                </head>
+                <body>${printContent}</body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+    </script>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const hamburgerIcon = document.getElementById('hamburger-icon');
+
+        hamburgerIcon.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camera Inventory System</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+       background-color: #f0f0f0;
+      flex-direction: column;
+      text-align: center;
+     
+    }
+
+    .logo-container {
+      width: 100px;
+      height: 100px;
+      border: 3px solid black;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .logo-container img {
+      width: 100%;
+      height: auto;
+    }
+
+    .loading-text {
+      font-size: 20px;
+      color: black;
+      margin-bottom: 10px;
+    }
+
+    .loading-container {
+      width: 100%;
+      max-width: 400px;
+      height: 15px;
+      background-color: transparent;
+      border: 2px solid black;
+      border-radius: 50px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .loading-bar {
+      height: 100%;
+      width: 0;
+      background-color: black;
+      animation: loading 4s linear forwards;
+    }
+
+    @keyframes loading {
+      0% {
+        width: 0%;
+      }
+      100% {
+        width: 100%;
+      }
+    }
+
+    .welcome-container {
+      display: none;
+      background-color: #d3d3d3;
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .welcome-container img {
+      width: 40%;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .welcome-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: black;
+      margin-bottom: 15px;
+    }
+    
+    .welcome-description {
+      font-size: 10px;
+      font-weight: bold;
+      color: black;
+      margin-bottom: 15px;
+    }
+
+    .login-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #00bfff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .login-btn:hover {
+      background-color: #007acc; 
+    }
+  </style>
+</head>
+    <body>
+      <div class="logo-container">
+        <img src="Images/logo.png" alt="Logo">
+      </div>
+      <div class="loading-text">Loading...</div>
+      <div class="loading-container">
+        <div class="loading-bar"></div>
+      </div>
+
+      <div class="welcome-container">
+        <img src="Images/logo.png" alt="Logo">
+        <div class="welcome-title">Camera Inventory System</div>
+        <div class="welcome-description">Please login to continue</div>
+        <button class="login-btn" onclick="location.href='homepage.html'">Login</button>
+      </div>
+
+      <script>
+        setTimeout(function() {
+          document.querySelector('.logo-container').style.display = 'none';
+          document.querySelector('.loading-text').style.display = 'none';
+          document.querySelector('.loading-container').style.display = 'none';
+          document.querySelector('.welcome-container').style.display = 'block';
+        }, 4500);
+      </script>
+    </body>
+</html>
