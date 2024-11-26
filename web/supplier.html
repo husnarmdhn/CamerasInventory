@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -420,16 +421,14 @@
             { supplierID: 'SUP003', supplierName: 'Lens Depot Malaysia', phoneNumber: '03-34567890', email: 'support@lensdepot.my', status: 'Active' },
             { supplierID: 'SUP004', supplierName: 'MyCamera Equipment', phoneNumber: '03-11223344', email: 'contact@mycamerahq.my', status: 'Active' }
         ];
-
+        
         const tableBody = document.querySelector('#supplierTable tbody');
         const searchBox = document.getElementById('searchBox');
         const editForm = document.getElementById('editForm');
         const addSupplierForm = document.getElementById('addSupplierForm');
-        const supplierTable = document.getElementById('supplierTable');
         let currentEditingSupplier = null;
         let sortOrder = true;
-
-        // Load supplier data into the table
+        
         function loadTable() {
             tableBody.innerHTML = '';
             supplierData.forEach((supplier, index) => {
@@ -447,8 +446,7 @@
                 tableBody.appendChild(row);
             });
         }
-
-        // Function to show the edit form
+        
         function editSupplier(index) {
             currentEditingSupplier = supplierData[index];
             document.getElementById('editSupplierID').value = currentEditingSupplier.supplierID;
@@ -456,70 +454,9 @@
             document.getElementById('editPhoneNumber').value = currentEditingSupplier.phoneNumber;
             document.getElementById('editEmail').value = currentEditingSupplier.email;
             document.getElementById('editStatus').value = currentEditingSupplier.status;
-
-            // Hide the table and show the edit form
-            supplierTable.style.display = 'none';
             editForm.style.display = 'block';
         }
-
-        // Function to show the add supplier form
-        function showAddSupplierForm() {
-            // Hide the table and show the add supplier form
-            supplierTable.style.display = 'none';
-            addSupplierForm.style.display = 'block';
-        }
-
-        // Function to cancel the edit and return to the table
-        function cancelEdit() {
-            // Show the table and hide the edit form
-            supplierTable.style.display = 'block';
-            editForm.style.display = 'none';
-        }
-
-        // Function to hide the add supplier form and return to the table
-        function hideAddSupplierForm() {
-            // Show the table and hide the add supplier form
-            supplierTable.style.display = 'block';
-            addSupplierForm.style.display = 'none';
-        }
-
-        // Submit the edit form
-        editForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            currentEditingSupplier.supplierID = document.getElementById('editSupplierID').value;
-            currentEditingSupplier.supplierName = document.getElementById('editSupplierName').value;
-            currentEditingSupplier.phoneNumber = document.getElementById('editPhoneNumber').value;
-            currentEditingSupplier.email = document.getElementById('editEmail').value;
-            currentEditingSupplier.status = document.getElementById('editStatus').value;
-
-            // Hide the form and show the table
-            editForm.style.display = 'none';
-            supplierTable.style.display = 'block';
-
-            loadTable();
-        });
-
-        // Add a new supplier
-        addSupplierForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const newSupplier = {
-                supplierID: document.getElementById('newSupplierID').value,
-                supplierName: document.getElementById('newSupplierName').value,
-                phoneNumber: document.getElementById('newPhoneNumber').value,
-                email: document.getElementById('newEmail').value,
-                status: document.getElementById('newStatus').value
-            };
-
-            supplierData.push(newSupplier);
-
-            // Hide the add supplier form and show the table
-            addSupplierForm.style.display = 'none';
-            supplierTable.style.display = 'block';
-
-            loadTable();
-        });
-
-        // Search functionality
+        
         function searchSupplier() {
             const query = searchBox.value.toLowerCase();
             const filteredData = supplierData.filter(supplier => {
@@ -527,7 +464,7 @@
             });
             loadFilteredTable(filteredData);
         }
-
+        
         function loadFilteredTable(data) {
             tableBody.innerHTML = '';
             data.forEach((supplier, index) => {
@@ -545,11 +482,60 @@
                 tableBody.appendChild(row);
             });
         }
+        
+        function sortTable(columnIndex) {
+            inventoryData.sort((a, b) => {
+                const aValue = Object.values(a)[columnIndex].toString().toLowerCase();
+                const bValue = Object.values(b)[columnIndex].toString().toLowerCase();
+
+                if (aValue < bValue) return sortOrder ? -1 : 1;
+                if (aValue > bValue) return sortOrder ? 1 : -1;
+                return 0;
+            });
+            sortOrder = !sortOrder;
+            loadTable();
+        }
+
+        editForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            currentEditingSupplier.supplierID = document.getElementById('editSupplierID').value;
+            currentEditingSupplier.supplierName = document.getElementById('editSupplierName').value;
+            currentEditingSupplier.phoneNumber = document.getElementById('editPhoneNumber').value;
+            currentEditingSupplier.email = document.getElementById('editEmail').value;
+            currentEditingSupplier.status = document.getElementById('editStatus').value;
+            editForm.style.display = 'none';
+            loadTable();
+        });
+        
+        function showAddSupplierForm() {
+            addSupplierForm.style.display = 'block';
+        }
+
+        function hideAddSupplierForm() {
+            addSupplierForm.style.display = 'none';
+        }
+        
+        function cancelEdit() {
+            editForm.style.display = 'none'; 
+        }
+
+        addSupplierForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newSupplier = {
+                supplierID: document.getElementById('newSupplierID').value,
+                supplierName: document.getElementById('newSupplierName').value,
+                phoneNumber: document.getElementById('newPhoneNumber').value,
+                email: document.getElementById('newEmail').value,
+                status: document.getElementById('newStatus').value
+            };
+            inventoryData.push(newSupplier);
+            loadTable();
+            hideAddSupplierForm();
+        });
 
         // Initial load
         loadTable();
     </script>
-
     <script>
         const sidebar = document.getElementById('sidebar');
         const hamburgerIcon = document.getElementById('hamburger-icon');

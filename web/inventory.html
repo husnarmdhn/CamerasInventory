@@ -328,7 +328,7 @@
             <img src="Images/inventory.png" alt="Inventory Icon">
             <span>Inventory</span>
         </a>
-        <a href="#">
+        <a href="staff.html">
             <img src="Images/staff.png" alt="Staff Icon">
             <span>Staff</span>
         </a>
@@ -340,19 +340,19 @@
             <img src="Images/invoices.png" alt="Invoices Icon">
             <span>Invoices</span>
         </a>
-        <a href="#">
+        <a href="report.html">
             <img src="Images/report.png" alt="Reports Icon">
             <span>Reports</span>
         </a>
-        <a href="#">
+        <a href="settings.html">
             <img src="Images/setting.png" alt="Settings Icon">
             <span>Settings</span>
         </a>
-        <a href="#">
+        <a href="javascript:void(0);" onclick="logoutConfirmation()">
             <img src="Images/logout.png" alt="Logout Icon">
             <span>Logout</span>
-        </a>
-    </div>
+        </a>
+    </div>
     <div class="main-content">
         <header>
             <h1>Inventory Details</h1>
@@ -555,7 +555,7 @@
         }
         
         function cancelEdit() {
-            editForm.style.display = 'none';
+            editForm.style.display = 'none'; 
         }
 
         addItemForm.addEventListener('submit', (e) => {
