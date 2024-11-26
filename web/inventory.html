@@ -229,19 +229,6 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-
-        #editForm button {
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #editForm button:hover {
-            background-color: #555;
-        }
         
         .top-actions {
             display: flex;
@@ -296,8 +283,8 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-
-        #addItemForm button {
+        
+        .button-save{
             background-color: #333;
             color: white;
             padding: 10px 20px;
@@ -305,9 +292,29 @@
             border-radius: 5px;
             cursor: pointer;
         }
-
-        #addItemForm button:hover {
+        
+        .button-save:hover {
             background-color: #555;
+        }
+        
+        .button-cancel{
+            background-color: #808080;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .button-cancel:hover {
+            background-color: #D3D3D3;
+        }
+        
+        #editForm .button-container,
+        #addItemForm .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -363,24 +370,6 @@
             <button id="addItemButton" onclick="showAddItemForm()">Add Item</button>
         </div>
         
-        <table id="inventoryTable">
-            
-            <thead>
-                <tr>
-                    <th onclick="sortTable(0)">Item ID</th>
-                    <th onclick="sortTable(1)">Supplier ID</th>
-                    <th onclick="sortTable(2)">Shelf</th>
-                    <th onclick="sortTable(3)">Type</th>
-                    <th onclick="sortTable(4)">Brand</th>
-                    <th onclick="sortTable(5)">Model</th>
-                    <th onclick="sortTable(6)">Price</th>
-                    <th onclick="sortTable(7)">Quantity</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        
         <form id="editForm">
             <label for="editType">Item ID</label>
             <input type="text" id="editItem" required>
@@ -398,8 +387,11 @@
             <input type="number" id="editPrice" required>
             <label for="editQuantity">Quantity:</label>
             <input type="number" id="editQuantity" required>
-            <button type="submit">Save Changes</button>
-            <button type="button" onclick="cancelEdit()">Cancel</button>
+            <div class="button-container">
+                <button type="submit" class="button-save">Save Changes</button>
+                <button type="button" class="button-cancel" onclick="cancelEdit()">Cancel</button>
+            </div>
+            
         </form>
         
           <form id="addItemForm">
@@ -419,9 +411,30 @@
             <input type="number" id="newPrice" required>
             <label for="newQuantity">Quantity</label>
             <input type="number" id="newQuantity" required>
-            <button type="submit">Add Item</button>
-            <button type="button" onclick="hideAddItemForm()">Cancel</button>
+            <div class="button-container">
+                <button type="submit" class="button-save">Add Item</button>
+                <button type="button" class="button-cancel" onclick="hideAddItemForm()">Cancel</button>
+            </div>
+            
         </form>
+        
+        <table id="inventoryTable">
+            
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Item ID</th>
+                    <th onclick="sortTable(1)">Supplier ID</th>
+                    <th onclick="sortTable(2)">Shelf</th>
+                    <th onclick="sortTable(3)">Type</th>
+                    <th onclick="sortTable(4)">Brand</th>
+                    <th onclick="sortTable(5)">Model</th>
+                    <th onclick="sortTable(6)">Price</th>
+                    <th onclick="sortTable(7)">Quantity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
         
         <footer>
             &copy; 2024 Camera Rental System. All Rights Reserved.

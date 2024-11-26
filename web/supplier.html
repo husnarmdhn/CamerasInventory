@@ -230,19 +230,6 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-
-        #editForm button {
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #editForm button:hover {
-            background-color: #555;
-        }
         
         .top-actions {
             display: flex;
@@ -297,8 +284,8 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-
-        #addSupplierForm button {
+        
+        .button-save{
             background-color: #333;
             color: white;
             padding: 10px 20px;
@@ -306,9 +293,29 @@
             border-radius: 5px;
             cursor: pointer;
         }
-
-        #addSupplierForm button:hover {
+        
+        .button-save:hover {
             background-color: #555;
+        }
+        
+        .button-cancel{
+            background-color: #808080;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .button-cancel:hover {
+            background-color: #D3D3D3;
+        }
+        
+        #editForm .button-container,
+        #addSupplierForm .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -364,6 +371,41 @@
             <button id="addSupplierButton" onclick="showAddSupplierForm()">Add Supplier</button>
         </div>
         
+        <form id="editForm">
+            <label for="editSupplierID">Supplier ID</label>
+            <input type="text" id="editSupplierID" required>
+            <label for="editSupplierName">Supplier Name</label>
+            <input type="text" id="editSupplierName" required>
+            <label for="editPhoneNumber">Phone Number</label>
+            <input type="text" id="editPhoneNumber" required>
+            <label for="editEmail">Email</label>
+            <input type="email" id="editEmail" required>
+            <label for="editStatus">Status</label>
+            <input type="text" id="editStatus" required>
+            <div class="button-container">
+                <button type="submit" class="button-save">Save Changes</button>
+                <button type="button" class="button-cancel" onclick="cancelEdit()">Cancel</button>
+            </div>
+            
+        </form>
+        
+        <form id="addSupplierForm">
+            <label for="newSupplierID">Supplier ID</label>
+            <input type="text" id="newSupplierID" required>
+            <label for="newSupplierName">Supplier Name</label>
+            <input type="text" id="newSupplierName" required>
+            <label for="newPhoneNumber">Phone Number</label>
+            <input type="text" id="newPhoneNumber" required>
+            <label for="newEmail">Email</label>
+            <input type="email" id="newEmail" required>
+            <label for="newStatus">Status</label>
+            <input type="text" id="newStatus" required>
+            <div class="button-container">
+                <button type="submit" class="button-save">Add Supplier</button>
+                <button type="button" class="button-cancel" onclick="hideAddSupplierForm()">Cancel</button>
+             </div>
+        </form>
+        
         <table id="supplierTable">
             
             <thead>
@@ -378,36 +420,6 @@
             </thead>
             <tbody></tbody>
         </table>
-        
-        <form id="editForm">
-            <label for="editSupplierID">Supplier ID</label>
-            <input type="text" id="editSupplierID" required>
-            <label for="editSupplierName">Supplier Name</label>
-            <input type="text" id="editSupplierName" required>
-            <label for="editPhoneNumber">Phone Number</label>
-            <input type="text" id="editPhoneNumber" required>
-            <label for="editEmail">Email</label>
-            <input type="email" id="editEmail" required>
-            <label for="editStatus">Status</label>
-            <input type="text" id="editStatus" required>
-            <button type="submit">Save Changes</button>
-            <button type="button" onclick="cancelEdit()">Cancel</button>
-        </form>
-        
-        <form id="addSupplierForm">
-            <label for="newSupplierID">Supplier ID</label>
-            <input type="text" id="newSupplierID" required>
-            <label for="newSupplierName">Supplier Name</label>
-            <input type="text" id="newSupplierName" required>
-            <label for="newPhoneNumber">Phone Number</label>
-            <input type="text" id="newPhoneNumber" required>
-            <label for="newEmail">Email</label>
-            <input type="email" id="newEmail" required>
-            <label for="newStatus">Status</label>
-            <input type="text" id="newStatus" required>
-            <button type="submit">Add Supplier</button>
-            <button type="button" onclick="hideAddSupplierForm()">Cancel</button>
-        </form>
         
         <footer>
             &copy; 2024 Camera Rental System. All Rights Reserved.
