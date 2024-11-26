@@ -1,0 +1,439 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Camera Inventory System</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+            background-color: #f2f2f2;
+            color: black;
+        }
+
+        #hamburger-icon {
+            width: 36px;
+            height: 36px;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            width: 60px;
+        }
+
+        .sidebar img {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+        }
+
+        .sidebar.collapsed img {
+            margin: 0 auto;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s, padding-left 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #555;
+        }
+
+        .sidebar.collapsed a {
+            justify-content: center;
+            padding: 10px 0;
+        }
+
+        .sidebar.collapsed a span {
+            display: none;
+        }
+
+        .hamburger-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .hamburger-container span {
+            font-size: 25px;
+            color: white;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .hamburger-container span {
+            display: none;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #e6e6e6;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            width: 100%;
+            padding: 0px;
+            text-align: center;
+            border-bottom: 2px solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        header img {
+            margin: 10px;
+            width: 60px;
+            height: auto;
+        }
+
+        header h1 {
+            font-size: 2rem;
+        }
+
+        .admin-info {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 20px;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            text-align: left;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 80%;
+        }
+
+        .admin-info img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-top: 25px;
+        }
+
+        .admin-info-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .admin-info h2 {
+            margin: 0;
+            margin-top: 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .admin-info p {
+            margin: 5px 0;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #555;
+        }
+
+        footer {
+            margin-top: auto;
+            background-color: #333;
+            color: #ccc;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px; 
+            border-radius: 8px;
+            width: 600px;  
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;  
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;  
+        }
+
+        .modal-content button {
+            margin-top: 20px;
+            background-color: #333;
+            color: white;
+            padding: 12px 20px;  
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%; 
+        }
+
+        .modal-content button:hover {
+            background-color: #555;
+        }
+
+        .close-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .close-icon {
+            position: absolute; 
+            right: 465px;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-icon:hover {
+            color: #555; 
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+       <div class="hamburger-container">
+            <img src="Images/hamburger.png" alt="Menu" id="hamburger-icon">
+        </div>
+        <a href="homepage.html">
+            <img src="Images/homepage.png" alt="Homepage Icon">
+            <span>Homepage</span>
+        </a>
+        <a href="dashboard.html">
+            <img src="Images/dashboard.png" alt="Dashboard Icon">
+            <span>Dashboard</span>
+        </a>
+        <a href="inventory.html">
+            <img src="Images/inventory.png" alt="Inventory Icon">
+            <span>Inventory</span>
+        </a>
+        <a href="staff.html">
+            <img src="Images/staff.png" alt="Staff Icon">
+            <span>Staff</span>
+        </a>
+        <a href="supplier.html">
+            <img src="Images/supplier.png" alt="Supplier Icon">
+            <span>Supplier</span>
+        </a>
+        <a href="invoice.html">
+            <img src="Images/invoices.png" alt="Invoices Icon">
+            <span>Invoices</span>
+        </a>
+        <a href="report.html">
+            <img src="Images/report.png" alt="Reports Icon">
+            <span>Reports</span>
+        </a>
+        <a href="settings.html">
+            <img src="Images/setting.png" alt="Settings Icon">
+            <span>Settings</span>
+        </a>
+        <a href="javascript:void(0);" onclick="logoutConfirmation()">
+            <img src="Images/logout.png" alt="Logout Icon">
+            <span>Logout</span>
+        </a>
+    </div>
+    <div class="main-content">
+        <header>
+            <img src="Images/logo.png">
+            <h1>Settings - Camera Inventory System</h1>
+        </header>
+
+        <div class="admin-info">
+            <img src="Images/harraz.jpg" alt="Staff Photo">
+            <div class="admin-info-details">
+                <h2>MUHAMMAD HARRAZ HARIRI BIN HAZRILHASNIE</h2>
+                <p>Role: Admin</p>
+                <p>Status: Active</p>
+                <p>Staff/Admin ID: AD131</p>
+                <p>Staff Password: MH_131</p>
+                <p>Staff Number: 010-4008072</p>
+                <p>Email: harraz131@gmail.com</p>
+                <p>Address: 37, Jalan Pintar 2, Taman Universiti, 43000 Kajang, Selangor</p>
+            </div>
+        </div>
+
+
+        <div class="buttons-container">
+            <button class="btn" onclick="openEditModal()">Edit Profile</button>
+            <button class="btn" onclick="logoutConfirmation()">Logout</button>
+        </div>
+
+        <footer>
+            &copy; 2024 Camera Rental System. All Rights Reserved.
+        </footer>
+    </div>
+
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-icon" onclick="closeEditModal()">&#10006;</span>
+            <h2>Edit Profile</h2>
+            <form id="editProfileForm" onsubmit="saveProfile(event)">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" value="Muhammad Harraz Hariri Bin Hazrilhasnie">
+                
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="harraz131@gmail.com">
+                
+                <label for="role">Role</label>
+                <input type="text" id="role" name="role" value="Admin">
+                
+                <label for="address">Address</label>
+                <input type="text" id="address" name="address" value="37, Jalan Pintar 2, Taman Universiti, 43000 Kajang, Selangor">
+                
+                <label for="status">Status</label>
+                <input type="text" id="status" name="status" value="Active">
+                
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let staffInfo = {
+            name: "Muhammad Harraz Hariri Bin Hazrilhasnie",
+            email: "harraz131@gmail.com",
+            role: "Admin",
+            address: "37, Jalan Pintar 2, Taman Universiti, 43000 Kajang, Selangor",
+            status: "Active",
+            id: "AD131",
+            phone: "010-4008072",
+            password: "MH_131"
+        };
+        function openEditModal() {
+            document.getElementById('name').value = staffInfo.name;
+            document.getElementById('email').value = staffInfo.email;
+            document.getElementById('role').value = staffInfo.role;
+            document.getElementById('address').value = staffInfo.address;
+            document.getElementById('status').value = staffInfo.status;
+            document.getElementById('editProfileModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+
+        function saveProfile(event) {
+        event.preventDefault();
+
+        // Get values from the form
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const role = document.getElementById('role').value;
+        const address = document.getElementById('address').value;
+        const status = document.getElementById('status').value;
+
+        // Validate the form inputs
+        if (!name || !email || !role || !address || !status) {
+            alert('All fields are required!');
+            return;
+        }
+
+        // Update the staffInfo object
+        staffInfo.name = name;
+        staffInfo.email = email;
+        staffInfo.role = role;
+        staffInfo.address = address;
+        staffInfo.status = status;
+
+        // Reflect the changes in the HTML dynamically
+        document.querySelector('.admin-info h2').textContent = staffInfo.name;
+        document.querySelector('.admin-info-details').innerHTML = `
+            <h2>Name: ${staffInfo.name}</h2>
+            <p>Role: ${staffInfo.role}</p>
+            <p>Status: ${staffInfo.status}</p>
+            <p>Staff/Admin ID: ${staffInfo.id}</p>
+            <p>Staff Password: ${staffInfo.password}</p>
+            <p>Staff Number: ${staffInfo.phone}</p>
+            <p>Email: ${staffInfo.email}</p>
+            <p>Address: ${staffInfo.address}</p>
+        `;
+
+        alert('Profile updated successfully!');
+        closeEditModal();
+    }
+
+    // Function to handle logout
+    function logoutConfirmation() {
+        const userChoice = confirm("Are you sure you want to log out?");
+        if (userChoice) {
+            window.location.href = "logout.html";
+        }else {
+                window.location.href="settings.html";
+        }
+    }
+    </script>
+</body>
+</html>
